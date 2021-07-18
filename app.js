@@ -5,6 +5,8 @@ import json from 'koa-json'
 import apiRoutes from './routes/api.js'
 import graphqlRoutes from './schemas/root.js'
 
+const PORT = 9000
+
 const app = new Koa()
 
 app.use(logger())
@@ -15,4 +17,4 @@ app.use(logger())
    .use(graphqlRoutes.routes())
    .use(graphqlRoutes.allowedMethods())
 
-app.listen(9000, () => console.log('Server running at http://localhost:9000'))
+app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`))
