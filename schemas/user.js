@@ -36,6 +36,29 @@ export const createUser = {
    }
 }
 
+export const loginUser = {
+   type: messageType,
+   args: {
+      email: { type: GraphQLString },
+      password: { type: GraphQLString }
+   },
+   async resolve(parent, args) {
+      const user = await prisma.user.findFirst({
+         where: {
+            email: args.email,
+            password: args.password
+         }
+      })
+
+      if (!user) throw new Error('Email or password is wrong.')
+
+      return {
+         success: true,
+         message: 'Logged in.'
+      }
+   }
+}
+
 export const updatePassword = {
    type: messageType,
    args: {
