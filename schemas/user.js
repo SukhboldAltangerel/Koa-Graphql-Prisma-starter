@@ -50,7 +50,13 @@ export const loginUser = {
          }
       })
 
-      if (!user) throw new Error('Email or password is wrong.')
+      if (!user) {
+         // throw new Error('Email or password is wrong.')
+         return {
+            success: false,
+            message: 'Email or password is wrong.'
+         }
+      }
 
       return {
          success: true,
