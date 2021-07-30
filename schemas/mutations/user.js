@@ -1,4 +1,4 @@
-import { GraphQLID, GraphQLString } from "graphql"
+import { GraphQLID, GraphQLNonNull, GraphQLString } from "graphql"
 import { prisma } from "../root.js"
 import { messageType } from "../types/message.js"
 import { userType } from "../types/user.js"
@@ -24,12 +24,15 @@ export const loginUser = {
       password: { type: GraphQLString }
    },
    async resolve(parent, args, ctx) {
+      if (!args.email) ctx.throw('$$$Имэйл хаягаараа нэвтэрнэ үү.')
+      if (!args.password) ctx.throw('$$$Нууц үгээ оруулна уу.')
+
       const user = await prisma.user.findFirst({
          where: args
       })
 
       if (!user) {
-         ctx.throw('$$$Email or password is wrong.')
+         ctx.throw('$$$Имэйл эсвэл нууц үг буруу байна.')
       }
 
       return {
@@ -52,9 +55,9 @@ export const updatePassword = {
          }
       })
 
-      if (!user) ctx.throw('$$$User not found.')
+      if (!user) ctx.throw('$$$Хэрэглэгч олдсонгүй.')
 
-      if (args.oldPassword !== user.password) ctx.throw('$$$Password is wrong.')
+      if (args.oldPassword !== user.password) ctx.throw('$$$Нууц үг буруу байна.')
 
       await prisma.user.update({
          where: {
@@ -67,7 +70,7 @@ export const updatePassword = {
 
       return {
          success: true,
-         message: 'Password changed.'
+         message: 'Нууц үг солигдлоо.'
       }
    },
 }

@@ -4,6 +4,7 @@ import Router from '@koa/router'
 import Prisma from '@prisma/client'
 import { getUsers } from './queries/user.js'
 import { createUser, loginUser, updatePassword } from './mutations/user.js'
+import json from 'koa-json'
 
 const router = new Router()
 
@@ -31,11 +32,25 @@ const schema = new GraphQLSchema({
    mutation: mutations
 })
 
+function extensions({ document, variables, operationName, result, context }) {
+   const errors = result.errors
+   if (errors) {
+      const myError = errors.find(error => error.message.startsWith('$$$'))
+      const errorMsg = myError?.message.slice(3)
+      if (errorMsg) {
+         return {
+            errorMsg: errorMsg
+         }
+      }
+   }
+}
+
 router.all(
    '/graphql',
    graphqlHTTP((req, res, ctx) => ({
       schema: schema,
-      graphiql: true
+      graphiql: true,
+      extensions
    }))
 )
 
