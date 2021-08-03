@@ -3,8 +3,7 @@ import { GraphQLObjectType, GraphQLSchema } from 'graphql'
 import Router from '@koa/router'
 import Prisma from '@prisma/client'
 import { getUsers } from './queries/user.js'
-import { createUser, loginUser, updatePassword } from './mutations/user.js'
-import json from 'koa-json'
+import { signUpUser, loginUser, changePassword } from './mutations/user.js'
 
 const router = new Router()
 
@@ -21,9 +20,9 @@ const queries = new GraphQLObjectType({
 const mutations = new GraphQLObjectType({
    name: 'mutations',
    fields: {
-      createUser: createUser,
+      signUpUser: signUpUser,
       loginUser: loginUser,
-      updatePassword: updatePassword
+      changePassword: changePassword
    }
 })
 

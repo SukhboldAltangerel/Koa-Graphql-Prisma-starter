@@ -2,18 +2,38 @@ import { GraphQLID, GraphQLNonNull, GraphQLString } from "graphql"
 import { prisma } from "../root.js"
 import { messageType } from "../types/message.js"
 import { userType } from "../types/user.js"
+import bcrypt from 'bcrypt'
 
-export const createUser = {
+const saltRounds = 10
+
+export const signUpUser = {
    type: userType,
    args: {
       name: { type: GraphQLString },
       email: { type: GraphQLString },
       password: { type: GraphQLString }
    },
-   async resolve(parent, args) {
-      return await prisma.user.create({
-         data: args
+   async resolve(parent, args, ctx) {
+      let user = await prisma.user.findFirst({
+         where: {
+            email: args.email
+         }
       })
+
+      if (user) {
+         ctx.throw('$$$Имэйл хаяг бүртгэлтэй байна.')
+      }
+
+      bcrypt.hash(args.password, saltRounds)
+         .then(async hash => {
+            args.password = hash
+            user = prisma.user.create({
+               data: args
+            })
+         })
+         .catch(err => ctx.throw(err.message))
+
+      return user
    }
 }
 
@@ -41,7 +61,7 @@ export const loginUser = {
    }
 }
 
-export const updatePassword = {
+export const changePassword = {
    type: messageType,
    args: {
       id: { type: GraphQLID },
