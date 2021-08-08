@@ -4,6 +4,7 @@ import cors from '@koa/cors'
 import json from 'koa-json'
 import apiRoutes from './routes/api.js'
 import graphqlRoutes from './schemas/root.js'
+import jwt from 'koa-jwt'
 
 const PORT = 9000
 
@@ -12,6 +13,7 @@ const app = new Koa()
 app.use(logger())
    .use(cors())
    .use(json())
+   // .use(jwt({ secret: 'shared-secret' }))
    .use(apiRoutes.routes())
    .use(apiRoutes.allowedMethods())
    .use(graphqlRoutes.routes())
