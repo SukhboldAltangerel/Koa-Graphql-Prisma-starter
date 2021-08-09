@@ -1,14 +1,14 @@
 import { GraphQLID, GraphQLNonNull, GraphQLString } from "graphql"
 import { prisma } from "../root.js"
-import { messageType } from "../types/message.js"
-import { userType } from "../types/user.js"
+import { messageType, messageWithTokenType } from "../types/message.js"
 import bcrypt from 'bcrypt'
+import tokenSign from "../../utilities/jwt.js"
 
 const saltRounds = 10
 const unmtachError = (ctx) => ctx.throw('$$$Имэйл эсвэл нууц үг буруу байна.')
 
 export const signUpUser = {
-   type: messageType,
+   type: messageWithTokenType,
    args: {
       name: { type: GraphQLString },
       email: { type: GraphQLString },
@@ -25,21 +25,23 @@ export const signUpUser = {
          ctx.throw('$$$Имэйл хаяг бүртгэлтэй байна.')
       }
 
-      bcrypt.hash(args.password, saltRounds)
-         .then(async hash => {
-            args.password = hash
-            user = await prisma.user.create({
-               data: args
-            })
-         })
-         .catch(err => ctx.throw(err.message))
+      const hash = await bcrypt.hash(args.password, saltRounds)
+      args.password = hash
+      user = await prisma.user.create({
+         data: args
+      })
 
-      return { message: 'Таныг бүртгэлээ.' }
+      const token = tokenSign({ user: user.name })
+
+      return {
+         message: 'Хэрэглэгч бүртгүүллээ.',
+         token: token
+      }
    }
 }
 
 export const loginUser = {
-   type: userType,
+   type: messageWithTokenType,
    args: {
       email: { type: GraphQLString },
       password: { type: GraphQLString }
@@ -58,15 +60,17 @@ export const loginUser = {
          unmtachError(ctx)
       }
 
-      bcrypt.compare(args.password, user.password)
-         .then(result => {
-            if (!result) {
-               unmtachError(ctx)
-            }
-         })
-         .catch(err => ctx.throw(err.message))
+      const match = await bcrypt.compare(args.password, user.password)
+      if (!match) {
+         unmtachError(ctx)
+      }
 
-      return { email: user.email }
+      const token = tokenSign({ user: user.name })
+
+      return {
+         message: 'Хэрэглэгч нэвтэрлээ.',
+         token: token
+      }
    }
 }
 
@@ -78,27 +82,6 @@ export const changePassword = {
       newPassword: { type: GraphQLString }
    },
    async resolve(parent, args, ctx) {
-      const user = await prisma.user.findUnique({
-         where: {
-            id: +args.id
-         }
-      })
-
-      if (!user) ctx.throw('$$$Хэрэглэгч олдсонгүй.')
-
-      if (args.oldPassword !== user.password) ctx.throw('$$$Нууц үг буруу байна.')
-
-      await prisma.user.update({
-         where: {
-            id: +args.id
-         },
-         data: {
-            password: args.newPassword
-         }
-      })
-
-      return {
-         message: 'Нууц үг солигдлоо.'
-      }
+      return { message: 'Нууц үг солигдлоо.' }
    },
 }

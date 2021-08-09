@@ -10,6 +10,21 @@ const router = new Router()
 const { PrismaClient } = Prisma
 export const prisma = new PrismaClient()
 
+const unAuthQueries = new GraphQLObjectType({
+   name: 'queries',
+   fields: {
+      getUsers: getUsers
+   }
+})
+
+const unAuthMutations = new GraphQLObjectType({
+   name: 'mutations',
+   fields: {
+      signUpUser: signUpUser,
+      loginUser: loginUser,
+   }
+})
+
 const queries = new GraphQLObjectType({
    name: 'queries',
    fields: {
@@ -20,10 +35,13 @@ const queries = new GraphQLObjectType({
 const mutations = new GraphQLObjectType({
    name: 'mutations',
    fields: {
-      signUpUser: signUpUser,
-      loginUser: loginUser,
       changePassword: changePassword
    }
+})
+
+const unAuthSchema = new GraphQLSchema({
+   query: unAuthQueries,
+   mutation: unAuthMutations
 })
 
 const schema = new GraphQLSchema({
@@ -47,7 +65,9 @@ function extensions({ document, variables, operationName, result, context }) {
 router.all(
    '/graphql',
    graphqlHTTP((req, res, ctx) => ({
-      schema: schema,
+      schema: ctx.state.user
+         ? schema
+         : unAuthSchema,
       graphiql: true,
       extensions
    }))
