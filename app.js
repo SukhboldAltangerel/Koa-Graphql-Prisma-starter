@@ -5,11 +5,11 @@ import json from 'koa-json'
 import apiRoutes from './routes/api.js'
 import graphqlRoutes from './schemas/root.js'
 import koaJwt from 'koa-jwt'
-import jwt from 'jsonwebtoken'
 
 const app = new Koa()
 
-app.use(logger())
+app
+   .use(logger())
    .use(cors())
    .use(json())
    .use(apiRoutes.routes())
