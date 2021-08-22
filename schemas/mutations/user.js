@@ -15,6 +15,10 @@ export const signUpUser = {
       password: { type: GraphQLString }
    },
    async resolve(parent, args, ctx) {
+      if (Object.values(args).some(value => !value)) {
+         ctx.throw('$$$Талбар хоосон байна.')
+      }
+
       let user = await prisma.user.findFirst({
          where: {
             email: args.email
