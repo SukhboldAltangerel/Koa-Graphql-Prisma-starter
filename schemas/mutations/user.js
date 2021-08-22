@@ -1,4 +1,4 @@
-import { GraphQLID, GraphQLNonNull, GraphQLString } from "graphql"
+import { GraphQLID, GraphQLString } from "graphql"
 import { prisma } from "../root.js"
 import { messageType, messageWithTokenType } from "../types/message.js"
 import bcrypt from 'bcrypt'
@@ -85,7 +85,7 @@ export const changePassword = {
       oldPassword: { type: GraphQLString },
       newPassword: { type: GraphQLString }
    },
-   async resolve(parent, args, ctx) {
+   async resolve() {
       return { message: 'Нууц үг солигдлоо.' }
    },
 }
