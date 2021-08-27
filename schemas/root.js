@@ -49,7 +49,7 @@ const schema = new GraphQLSchema({
    mutation: mutations
 })
 
-function extensions({ document, variables, operationName, result, context }) {
+function extensions({ result }) {
    const errors = result.errors
    if (errors) {
       const myError = errors.find(error => error.message.startsWith('$$$'))
