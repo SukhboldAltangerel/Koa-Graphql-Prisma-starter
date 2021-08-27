@@ -1,14 +1,10 @@
 import graphqlHTTP from 'koa-graphql'
 import { GraphQLObjectType, GraphQLSchema } from 'graphql'
 import Router from '@koa/router'
-import Prisma from '@prisma/client'
 import { getUsers } from './queries/user.js'
 import { signUpUser, loginUser, changePassword } from './mutations/user.js'
 
 const router = new Router()
-
-const { PrismaClient } = Prisma
-export const prisma = new PrismaClient()
 
 const unAuthQueries = new GraphQLObjectType({
    name: 'queries',
@@ -46,7 +42,8 @@ const unAuthSchema = new GraphQLSchema({
 
 const schema = new GraphQLSchema({
    query: queries,
-   mutation: mutations
+   mutation: mutations,
+   // subscription: ''
 })
 
 function extensions({ result }) {

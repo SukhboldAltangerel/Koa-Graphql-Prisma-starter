@@ -1,5 +1,4 @@
 import { GraphQLID, GraphQLString } from "graphql"
-import { prisma } from "../root.js"
 import { messageType, messageWithTokenType } from "../types/message.js"
 import bcrypt from 'bcrypt'
 import tokenSign from "../../utilities/jwt.js"
@@ -19,7 +18,7 @@ export const signUpUser = {
          ctx.throw('$$$Талбар хоосон байна.')
       }
 
-      let user = await prisma.user.findFirst({
+      let user = await ctx.prisma.user.findFirst({
          where: {
             email: args.email
          }
@@ -31,7 +30,7 @@ export const signUpUser = {
 
       const hash = await bcrypt.hash(args.password, saltRounds)
       args.password = hash
-      user = await prisma.user.create({
+      user = await ctx.prisma.user.create({
          data: args
       })
 
@@ -54,7 +53,7 @@ export const loginUser = {
       if (!args.email) ctx.throw('$$$Имэйл хаягаараа нэвтэрнэ үү.')
       if (!args.password) ctx.throw('$$$Нууц үгээ оруулна уу.')
 
-      const user = await prisma.user.findFirst({
+      const user = await ctx.prisma.user.findFirst({
          where: {
             email: args.email
          }
