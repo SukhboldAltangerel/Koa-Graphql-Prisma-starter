@@ -3,6 +3,7 @@ import { GraphQLObjectType, GraphQLSchema } from 'graphql'
 import Router from '@koa/router'
 import { getUsers } from './queries/user.js'
 import { signUpUser, loginUser, changePassword } from './mutations/user.js'
+import { liveChat } from './subscriptions/chat.js'
 
 const router = new Router()
 
@@ -35,15 +36,28 @@ const mutations = new GraphQLObjectType({
    }
 })
 
-const unAuthSchema = new GraphQLSchema({
-   query: unAuthQueries,
-   mutation: unAuthMutations
+
+const subscriptions = new GraphQLObjectType({
+   name: 'subscriptions',
+   fields: {
+      liveChat: liveChat
+   }
 })
 
-const schema = new GraphQLSchema({
+export const unAuthSchema = new GraphQLSchema({
+   query: unAuthQueries,
+   mutation: unAuthMutations,
+   subscription: subscriptions
+})
+
+export const schema = new GraphQLSchema({
    query: queries,
    mutation: mutations,
-   // subscription: ''
+   subscription: subscriptions
+})
+
+export const subscriptionSchema = new GraphQLSchema({
+   subscription: subscriptions
 })
 
 function extensions({ result }) {
@@ -59,13 +73,17 @@ function extensions({ result }) {
    }
 }
 
+const subscriptionEndpoint = `ws://localhost:${process.env.PORT}/graphql`;
+
 router.all(
    '/graphql',
    graphqlHTTP((req, res, ctx) => ({
       schema: ctx.state.user
          ? schema
          : unAuthSchema,
-      graphiql: true,
+      graphiql: {
+         subscriptionEndpoint
+      },
       extensions
    }))
 )
