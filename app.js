@@ -3,7 +3,7 @@ import logger from 'koa-logger'
 import cors from '@koa/cors'
 import json from 'koa-json'
 import apiRoutes from './routes/api.js'
-import graphqlRoutes, { schema, unAuthSchema, subscriptionSchema } from './schemas/root.js'
+import graphqlRoutes, { subscriptionSchema } from './schemas/root.js'
 import koaJwt from 'koa-jwt'
 import Prisma from '@prisma/client'
 const { PrismaClient } = Prisma
@@ -24,11 +24,13 @@ app.use(logger())
 
 const PORT = process.env.PORT
 
-const server = app.listen(PORT, () => {
-   console.log(`Server running at http://localhost:${PORT}`)
-   const wsServer = new ws.Server({
-      server,
-      path: '/graphql'
-   })
-   useServer({ subscriptionSchema }, wsServer)
+app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`))
+
+const server = new ws.Server({
+   port: PORT,
+   path: '/graphql'
 })
+useServer(
+   { subscriptionSchema },
+   server
+)

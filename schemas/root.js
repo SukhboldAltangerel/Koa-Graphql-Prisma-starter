@@ -36,7 +36,6 @@ const mutations = new GraphQLObjectType({
    }
 })
 
-
 const subscriptions = new GraphQLObjectType({
    name: 'subscriptions',
    fields: {
@@ -47,13 +46,11 @@ const subscriptions = new GraphQLObjectType({
 export const unAuthSchema = new GraphQLSchema({
    query: unAuthQueries,
    mutation: unAuthMutations,
-   subscription: subscriptions
 })
 
 export const schema = new GraphQLSchema({
    query: queries,
    mutation: mutations,
-   subscription: subscriptions
 })
 
 export const subscriptionSchema = new GraphQLSchema({
