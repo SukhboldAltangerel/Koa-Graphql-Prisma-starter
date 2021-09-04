@@ -24,6 +24,7 @@
     "koa-jwt": "^4.0.1",
     "koa-logger": "^3.2.1",
     "redis": "^4.0.0-rc.0",
+    "redis-rejson": "^1.0.0",
     "ws": "^8.2.0"
   },
   "devDependencies": {
