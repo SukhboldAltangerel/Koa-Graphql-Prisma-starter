@@ -1,13 +1,11 @@
-import { createClient } from 'redis'
+import redis from 'redis'
+import rejson from 'redis-rejson'
+import { app } from './app.js'
 
-(async () => {
-   const client = createClient()
-
+export default async function initRedis() {
+   rejson(redis)
+   const client = redis.createClient()
    client.on('error', err => console.log('Redis Client Error', err))
-
    await client.connect()
-
-   await client.set('user:3', 'tumur')
-   const value = await client.get('user:3')
-   console.log(value, '👀')
-})()
+   app.context.redis = client
+}

@@ -5,13 +5,15 @@ import json from 'koa-json'
 import apiRoutes from './routes/api.js'
 import graphqlRoutes, { subscriptionSchema } from './schemas/root.js'
 import koaJwt from 'koa-jwt'
-import Prisma from '@prisma/client'
-const { PrismaClient } = Prisma
+import { PrismaClient } from './node_modules/.prisma/client/index.js'
 import ws from './node_modules/ws/index.js'
 import { useServer } from 'graphql-ws/lib/use/ws'
+import initRedis from './redis.js'
 
-const app = new Koa()
+export const app = new Koa()
 app.context.prisma = new PrismaClient()
+
+initRedis()
 
 app.use(logger())
    .use(cors())

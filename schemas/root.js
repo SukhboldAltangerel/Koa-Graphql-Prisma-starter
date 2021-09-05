@@ -4,13 +4,16 @@ import Router from '@koa/router'
 import { getUsers } from './queries/user.js'
 import { signUpUser, loginUser, changePassword } from './mutations/user.js'
 import { liveChat } from './subscriptions/chat.js'
+import { getChatRedis } from './queries/chatRedis.js'
+import { addChatRedis } from './mutations/chatRedis.js'
 
 const router = new Router()
 
 const unAuthQueries = new GraphQLObjectType({
    name: 'queries',
    fields: {
-      getUsers: getUsers
+      getUsers: getUsers,
+      getChatRedis: getChatRedis
    }
 })
 
@@ -19,6 +22,7 @@ const unAuthMutations = new GraphQLObjectType({
    fields: {
       signUpUser: signUpUser,
       loginUser: loginUser,
+      addChatRedis: addChatRedis
    }
 })
 
