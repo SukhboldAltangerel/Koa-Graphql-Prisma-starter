@@ -1,11 +1,7 @@
-import redis from 'redis'
-import rejson from 'redis-rejson'
-import { app } from './app.js'
+import Redis from 'ioredis'
 
-export default async function initRedis() {
-   // rejson(redis)
-   const client = redis.createClient()
-   client.on('error', err => console.log('Redis Client Error', err))
-   await client.connect()
-   app.context.redis = client
-}
+const redis = new Redis()
+redis.on('connect', () => console.log('Connected to redis.'))
+redis.on('error', () => console.log('Could not connect to redis.'))
+
+export default redis

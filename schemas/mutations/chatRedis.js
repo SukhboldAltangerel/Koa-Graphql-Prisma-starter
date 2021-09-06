@@ -9,10 +9,8 @@ export const addChatRedis = {
       dateTime: { type: GraphQLString }
    },
    async resolve(parent, args, ctx) {
-      // await ctx.redis.json_arrappend('chat', args)
-      ctx.redis.set('name', 'bold')
-      console.log('👀')
-
+      const res = await ctx.redis.set('chat', args)
+      console.log('👀', res)
       return {
          message: `Msg added: ${args.message}`
       }

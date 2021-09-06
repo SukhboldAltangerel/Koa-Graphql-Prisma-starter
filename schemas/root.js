@@ -3,7 +3,6 @@ import { GraphQLObjectType, GraphQLSchema } from 'graphql'
 import Router from '@koa/router'
 import { getUsers } from './queries/user.js'
 import { signUpUser, loginUser, changePassword } from './mutations/user.js'
-import { liveChat } from './subscriptions/chat.js'
 import { getChatRedis } from './queries/chatRedis.js'
 import { addChatRedis } from './mutations/chatRedis.js'
 
@@ -40,13 +39,6 @@ const mutations = new GraphQLObjectType({
    }
 })
 
-const subscriptions = new GraphQLObjectType({
-   name: 'subscriptions',
-   fields: {
-      liveChat: liveChat
-   }
-})
-
 export const unAuthSchema = new GraphQLSchema({
    query: unAuthQueries,
    mutation: unAuthMutations,
@@ -55,10 +47,6 @@ export const unAuthSchema = new GraphQLSchema({
 export const schema = new GraphQLSchema({
    query: queries,
    mutation: mutations,
-})
-
-export const subscriptionSchema = new GraphQLSchema({
-   subscription: subscriptions
 })
 
 function extensions({ result }) {
