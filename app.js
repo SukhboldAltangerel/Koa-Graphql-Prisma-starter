@@ -7,6 +7,7 @@ import graphqlRoutes from './schemas/root.js'
 import koaJwt from 'koa-jwt'
 import { PrismaClient } from './node_modules/.prisma/client/index.js'
 import redis from './redis.js'
+import { Server } from 'socket.io'
 
 export const app = new Koa()
 app.context.prisma = new PrismaClient()
@@ -24,4 +25,18 @@ app.use(logger())
 
 const PORT = process.env.PORT
 
-app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`))
+const server = app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`))
+
+const io = new Server(server)
+
+io.on('connection', socket => {
+   console.log('a user connected')
+
+   socket.on('userConnect', ({ userId }) => {
+      console.log('user connected, userId: ', userId)
+   })
+
+   socket.on('disconnect', () => {
+      console.log('user disconnected')
+   })
+})
