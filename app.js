@@ -13,17 +13,12 @@ import ws from './node_modules/ws/index.js'
 import { useServer } from 'graphql-ws/lib/use/ws'
 import { PubSub } from 'graphql-subscriptions'
 
-export const app = new Koa()
+const app = new Koa()
 app.context.prisma = new PrismaClient()
 
 app.context.redis = redis
 
 export const pubSub = new PubSub()
-setInterval(() => {
-   pubSub.publish('message', {
-      message: 'Hi'
-   })
-}, 1000)
 app.context.pubSub = pubSub
 
 app.use(logger())
@@ -46,7 +41,7 @@ const server = app.listen(PORT, () => {
    })
 
    useServer({
-      schema: subscriptionSchema
+      schema: subscriptionSchema,
    }, wsServer
    )
 })
