@@ -1,7 +1,7 @@
-import { GraphQLID, GraphQLString } from "graphql"
-import { messageType, messageWithTokenType } from "../types/message.js"
+import { GraphQLID, GraphQLString } from 'graphql'
+import { messageType, messageWithTokenType } from '../types/message.js'
 import bcrypt from 'bcrypt'
-import tokenSign from "../../utilities/jwt.js"
+import tokenSign from '../../utilities/jwt.js'
 
 const saltRounds = 10
 const unmtachError = (ctx) => ctx.throw('$$$Имэйл эсвэл нууц үг буруу байна.')

@@ -3,16 +3,28 @@ import logger from 'koa-logger'
 import cors from '@koa/cors'
 import json from 'koa-json'
 import apiRoutes from './routes/api.js'
-import graphqlRoutes from './schemas/root.js'
+import graphqlRoutes, { subscriptionSchema } from './schemas/root.js'
 import koaJwt from 'koa-jwt'
 import { PrismaClient } from './node_modules/.prisma/client/index.js'
 import redis from './redis.js'
-import { Server } from 'socket.io'
+// import { Server } from 'socket.io'
+// import initSocketIo from './sockerIo.js'
+import ws from './node_modules/ws/index.js'
+import { useServer } from 'graphql-ws/lib/use/ws'
+import { PubSub } from 'graphql-subscriptions'
 
 export const app = new Koa()
 app.context.prisma = new PrismaClient()
 
 app.context.redis = redis
+
+export const pubSub = new PubSub()
+setInterval(() => {
+   pubSub.publish('message', {
+      message: 'Hi'
+   })
+}, 1000)
+app.context.pubSub = pubSub
 
 app.use(logger())
    .use(cors())
@@ -25,18 +37,20 @@ app.use(logger())
 
 const PORT = process.env.PORT
 
-const server = app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`))
+const server = app.listen(PORT, () => {
+   console.log(`Server running at http://localhost:${PORT}`)
 
-const io = new Server(server)
-
-io.on('connection', socket => {
-   console.log('a user connected')
-
-   socket.on('userConnect', ({ userId }) => {
-      console.log('user connected, userId: ', userId)
+   const wsServer = new ws.Server({
+      server,
+      path: '/graphql'
    })
 
-   socket.on('disconnect', () => {
-      console.log('user disconnected')
-   })
+   useServer({
+      schema: subscriptionSchema
+   }, wsServer
+   )
 })
+
+// const io = new Server(server)
+// initSocketIo(io)
+// app.context.io = io

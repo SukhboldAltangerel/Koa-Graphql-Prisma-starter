@@ -1,5 +1,5 @@
-import { GraphQLList } from "graphql"
-import { userType } from "../types/user.js"
+import { GraphQLList } from 'graphql'
+import { userType } from '../types/user.js'
 
 export const getUsers = {
    type: new GraphQLList(userType),

@@ -1,5 +1,5 @@
-import { GraphQLList } from "graphql"
-import { chatRedisType } from "../types/chatRedis.js"
+import { GraphQLList } from 'graphql'
+import { chatRedisType } from '../types/chatRedis.js'
 
 export const getChatRedis = {
    type: new GraphQLList(chatRedisType),

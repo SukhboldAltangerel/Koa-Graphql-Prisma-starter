@@ -9,9 +9,7 @@ export const addChatRedis = {
    },
    async resolve(parent, args, ctx) {
       args.dateTime = Date.now()
-      const res = await ctx.redis.send_command('JSON.ARRAPPEND', 'chat', '.', JSON.stringify(args))
-
-      console.log('👀', res)
+      await ctx.redis.send_command('JSON.ARRAPPEND', 'chat', '.', JSON.stringify(args))
       return {
          message: `Msg added: ${args.message}`
       }
