@@ -17,25 +17,23 @@ export const signUpUser = {
       if (Object.values(args).some(value => !value)) {
          ctx.throw('$$$Талбар хоосон байна.')
       }
-
       let user = await ctx.prisma.user.findFirst({
          where: {
             email: args.email
          }
       })
-
       if (user) {
          ctx.throw('$$$Имэйл хаяг бүртгэлтэй байна.')
       }
-
       const hash = await bcrypt.hash(args.password, saltRounds)
       args.password = hash
       user = await ctx.prisma.user.create({
          data: args
       })
-
-      const token = tokenSign({ user: user.name })
-
+      const token = tokenSign({
+         id: user.id,
+         name: user.name
+      })
       return {
          message: 'Хэрэглэгч бүртгүүллээ.',
          token: token
@@ -52,24 +50,22 @@ export const loginUser = {
    async resolve(parent, args, ctx) {
       if (!args.email) ctx.throw('$$$Имэйл хаягаараа нэвтэрнэ үү.')
       if (!args.password) ctx.throw('$$$Нууц үгээ оруулна уу.')
-
       const user = await ctx.prisma.user.findFirst({
          where: {
             email: args.email
          }
       })
-
       if (!user) {
          unmtachError(ctx)
       }
-
       const match = await bcrypt.compare(args.password, user.password)
       if (!match) {
          unmtachError(ctx)
       }
-
-      const token = tokenSign({ user: user.name })
-
+      const token = tokenSign({
+         id: user.id,
+         name: user.name
+      })
       return {
          message: 'Хэрэглэгч нэвтэрлээ.',
          token: token

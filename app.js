@@ -12,13 +12,14 @@ import redis from './redis.js'
 import ws from './node_modules/ws/index.js'
 import { useServer } from 'graphql-ws/lib/use/ws'
 import { PubSub } from 'graphql-subscriptions'
+import { execute, subscribe } from 'graphql'
 
 const app = new Koa()
 app.context.prisma = new PrismaClient()
 
 app.context.redis = redis
 
-export const pubSub = new PubSub()
+const pubSub = new PubSub()
 app.context.pubSub = pubSub
 
 app.use(logger())
@@ -35,6 +36,11 @@ const PORT = process.env.PORT
 const server = app.listen(PORT, () => {
    console.log(`Server running at http://localhost:${PORT}`)
 
+   const contextValue = {
+      redis: redis,
+      pubSub: pubSub
+   }
+
    const wsServer = new ws.Server({
       server,
       path: '/graphql'
@@ -42,6 +48,8 @@ const server = app.listen(PORT, () => {
 
    useServer({
       schema: subscriptionSchema,
+      execute: args => execute({ ...args, contextValue }),
+      subscribe: args => subscribe({ ...args, contextValue })
    }, wsServer
    )
 })

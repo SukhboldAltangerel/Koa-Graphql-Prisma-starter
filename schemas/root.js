@@ -5,15 +5,14 @@ import { getUsers } from './queries/user.js'
 import { signUpUser, loginUser, changePassword } from './mutations/user.js'
 import { getChatRedis } from './queries/chatRedis.js'
 import { addChatRedis } from './mutations/chatRedis.js'
-import { messageSubs } from './subscriptions/message.js'
+import { chatSub } from './subscriptions/chat.js'
 
 const router = new Router()
 
 const unAuthQueries = new GraphQLObjectType({
    name: 'queries',
    fields: {
-      getUsers: getUsers,
-      getChatRedis: getChatRedis
+      getUsers: getUsers
    }
 })
 
@@ -21,29 +20,30 @@ const unAuthMutations = new GraphQLObjectType({
    name: 'mutations',
    fields: {
       signUpUser: signUpUser,
-      loginUser: loginUser,
-      addChatRedis: addChatRedis
+      loginUser: loginUser
    }
 })
 
 const queries = new GraphQLObjectType({
    name: 'queries',
    fields: {
-      getUsers: getUsers
+      getUsers: getUsers,
+      getChatRedis: getChatRedis
    }
 })
 
 const mutations = new GraphQLObjectType({
    name: 'mutations',
    fields: {
-      changePassword: changePassword
+      changePassword: changePassword,
+      addChatRedis: addChatRedis
    }
 })
 
 export const subscriptions = new GraphQLObjectType({
    name: 'subscriptions',
    fields: {
-      messageSubs: messageSubs
+      chatSub: chatSub
    }
 })
 
