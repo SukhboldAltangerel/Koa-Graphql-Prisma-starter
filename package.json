@@ -25,7 +25,6 @@
     "koa-json": "^2.0.2",
     "koa-jwt": "^4.0.1",
     "koa-logger": "^3.2.1",
-    "socket.io": "^4.2.0",
     "ws": "^8.2.1"
   },
   "devDependencies": {

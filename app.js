@@ -7,8 +7,6 @@ import graphqlRoutes, { subscriptionSchema } from './schemas/root.js'
 import koaJwt from 'koa-jwt'
 import { PrismaClient } from './node_modules/.prisma/client/index.js'
 import redis from './redis.js'
-// import { Server } from 'socket.io'
-// import initSocketIo from './sockerIo.js'
 import ws from './node_modules/ws/index.js'
 import { useServer } from 'graphql-ws/lib/use/ws'
 import { PubSub } from 'graphql-subscriptions'
@@ -53,7 +51,3 @@ const server = app.listen(PORT, () => {
    }, wsServer
    )
 })
-
-// const io = new Server(server)
-// initSocketIo(io)
-// app.context.io = io
