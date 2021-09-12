@@ -3,7 +3,7 @@ import logger from 'koa-logger'
 import cors from '@koa/cors'
 import json from 'koa-json'
 import apiRoutes from './routes/api.js'
-import graphqlRoutes, { subscriptionSchema } from './schemas/root.js'
+import graphqlRoutes from './schemas/root.js'
 import koaJwt from 'koa-jwt'
 import { PrismaClient } from './node_modules/.prisma/client/index.js'
 import redis from './redis.js'
@@ -11,6 +11,7 @@ import ws from './node_modules/ws/index.js'
 import { useServer } from 'graphql-ws/lib/use/ws'
 import { PubSub } from 'graphql-subscriptions'
 import { execute, subscribe } from 'graphql'
+import { subscriptionSchema } from './schemas/sub.schema.js'
 
 const app = new Koa()
 app.context.prisma = new PrismaClient()
@@ -32,7 +33,7 @@ app.use(logger())
 const PORT = process.env.PORT
 
 const server = app.listen(PORT, () => {
-   console.log(`Server running at http://localhost:${PORT}`)
+   console.log(`Server running at http://localhost:${PORT}.`)
 
    const contextValue = {
       redis: redis,

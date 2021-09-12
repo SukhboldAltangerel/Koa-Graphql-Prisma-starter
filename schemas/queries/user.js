@@ -7,3 +7,11 @@ export const getUsers = {
       return await ctx.prisma.user.findMany()
    }
 }
+
+export const getUser = {
+   type: userType,
+   async resolve(parent, args, ctx) {
+      const user = ctx.state.user
+      return user
+   }
+}
