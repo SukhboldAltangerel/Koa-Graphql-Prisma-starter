@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLString } from 'graphql'
+import { GraphQLObjectType, GraphQLString, GraphQLID } from 'graphql'
 
 export const messageType = new GraphQLObjectType({
    name: 'message',
@@ -7,10 +7,13 @@ export const messageType = new GraphQLObjectType({
    }),
 })
 
-export const messageWithTokenType = new GraphQLObjectType({
-   name: 'messageWithToken',
+export const messageWithUserType = new GraphQLObjectType({
+   name: 'messageWithUser',
    fields: () => ({
       message: { type: GraphQLString },
-      token: { type: GraphQLString }
+      token: { type: GraphQLString },
+      id: { type: GraphQLID },
+      name: { type: GraphQLString },
+      email: { type: GraphQLString },
    }),
 })

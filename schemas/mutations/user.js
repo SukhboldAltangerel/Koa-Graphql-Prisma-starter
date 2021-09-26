@@ -1,5 +1,5 @@
 import { GraphQLID, GraphQLString } from 'graphql'
-import { messageType, messageWithTokenType } from '../types/message.js'
+import { messageType, messageWithUserType } from '../types/message.js'
 import bcrypt from 'bcrypt'
 import tokenSign from '../../utilities/jwt.js'
 
@@ -7,7 +7,7 @@ const saltRounds = 10
 const unmtachError = (ctx) => ctx.throw('$$$Имэйл эсвэл нууц үг буруу байна.')
 
 export const signUpUser = {
-   type: messageWithTokenType,
+   type: messageType,
    args: {
       name: { type: GraphQLString },
       email: { type: GraphQLString },
@@ -30,19 +30,14 @@ export const signUpUser = {
       user = await ctx.prisma.user.create({
          data: args
       })
-      const token = tokenSign({
-         id: user.id,
-         name: user.name
-      })
       return {
          message: 'Хэрэглэгч бүртгүүллээ.',
-         token: token
       }
    }
 }
 
 export const loginUser = {
-   type: messageWithTokenType,
+   type: messageWithUserType,
    args: {
       email: { type: GraphQLString },
       password: { type: GraphQLString }
@@ -64,11 +59,15 @@ export const loginUser = {
       }
       const token = tokenSign({
          id: user.id,
-         name: user.name
+         name: user.name,
+         email: user.email
       })
       return {
          message: 'Хэрэглэгч нэвтэрлээ.',
-         token: token
+         token: token,
+         id: user.id,
+         name: user.name,
+         email: user.email,
       }
    }
 }

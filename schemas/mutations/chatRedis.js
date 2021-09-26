@@ -12,6 +12,10 @@ export const addChatRedis = {
       args.name = user.name
       args.dateTime = Date.now()
       await ctx.redis.send_command('JSON.ARRAPPEND', 'chat', '.', JSON.stringify(args))
+      const chatLength = await ctx.redis.send_command('JSON.ARRLEN', 'chat', '.')
+      if (chatLength > 50) {
+         await ctx.redis.send_command('JSON.ARRPOP', 'chat', '.', 0)
+      }
       ctx.pubSub.publish('chatAdded', args)
       return {
          message: `Msg added: ${args.message}`
