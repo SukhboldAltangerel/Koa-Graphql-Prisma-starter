@@ -1,5 +1,6 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql'
 import { addChatRedis } from './mutations/chatRedis.js'
+import { uploadFile } from './mutations/file.js'
 import { changePassword } from './mutations/user.js'
 import { getChatRedis } from './queries/chatRedis.js'
 import { getUser, getUsers } from './queries/user.js'
@@ -20,7 +21,8 @@ const mutations = new GraphQLObjectType({
    fields: {
       ...unAuthMutationsFields,
       changePassword: changePassword,
-      addChatRedis: addChatRedis
+      addChatRedis: addChatRedis,
+      uploadFile: uploadFile
    }
 })
 

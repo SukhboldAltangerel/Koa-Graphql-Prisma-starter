@@ -2,6 +2,7 @@ import graphqlHTTP from 'koa-graphql'
 import Router from '@koa/router'
 import { authSchema } from './auth.schema.js'
 import { unAuthSchema } from './unAuth.schema.js'
+import { graphqlUploadKoa } from 'graphql-upload'
 
 const router = new Router()
 
@@ -22,6 +23,7 @@ const subscriptionEndpoint = `ws://localhost:${process.env.PORT}/graphql`
 
 router.all(
    '/graphql',
+   graphqlUploadKoa({ maxFileSize: 10000000, maxFiles: 10 }),
    graphqlHTTP((req, res, ctx) => ({
       schema: ctx.state.user
          ? authSchema
