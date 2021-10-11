@@ -1,7 +1,6 @@
 import Koa from 'koa'
 import logger from 'koa-logger'
 import cors from '@koa/cors'
-import json from 'koa-json'
 import apiRoutes from './routes/api.js'
 import graphqlRoutes from './schemas/root.js'
 import koaJwt from 'koa-jwt'
@@ -23,7 +22,6 @@ app.context.pubSub = pubSub
 
 app.use(logger())
    .use(cors())
-   .use(json())
    .use(apiRoutes.routes())
    .use(apiRoutes.allowedMethods())
    .use(koaJwt({ secret: process.env.ACCESS_TOKEN_SECRET, passthrough: true }))
