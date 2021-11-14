@@ -81,5 +81,5 @@ export const changePassword = {
    },
    async resolve() {
       return { message: 'Нууц үг солигдлоо.' }
-   },
+   }
 }
