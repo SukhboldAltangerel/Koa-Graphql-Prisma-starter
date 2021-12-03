@@ -18,6 +18,7 @@ const getFiles = path => {
 
 console.log(getFiles('schemas/test'))
 
+
 // import { promises } from 'fs'
 // import { join } from 'path'
 
