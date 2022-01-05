@@ -47,6 +47,5 @@ const server = app.listen(PORT, () => {
       schema: subscriptionSchema,
       execute: args => execute({ ...args, contextValue }),
       subscribe: args => subscribe({ ...args, contextValue })
-   }, wsServer
-   )
+   }, wsServer)
 })
